@@ -14,7 +14,9 @@
 
   function updateSettings(settings) {
     require("Storage").writeJSON("recorder.json", settings);
+    console.log("UPDATING SETTINGS 1");
     if (WIDGETS["recorder"]) WIDGETS["recorder"].reload();
+    console.log("UPDATING SETTINGS 2");
   }
 
   function getRecorders() {
@@ -236,7 +238,7 @@
     console.log("Reload 3");
   },setRecording:function(isOn) {
     var settings = loadSettings();
-    console.log(`S1: ${settings}`);
+    console.log(`S1: ${JSON.stringify(settings)}`);
     if (isOn && !settings.recording && !settings.file) {
       settings.file = "recorder.log0.csv";
     } else if (isOn && !settings.recording && require("Storage").list(settings.file).length){
@@ -250,7 +252,7 @@
         newFileName="recorder.log" + (maxNumber + 1) + ".csv";
         updateSettings(settings);
       }
-    console.log(`S2: ${settings}`);
+    console.log(`S2: ${JSON.stringify(settings)}`);
       var buttons={Yes:"yes",No:"no"};
       if (newFileName) buttons["New"] = "new";
       return E.showPrompt("Overwrite\nLog " + settings.file.match(/\d+/)[0] + "?",{title:"Recorder",buttons:buttons}).then(selection=>{
@@ -291,5 +293,7 @@
     }
   }*/};
   // load settings, set correct widget width
+  console.log("DOWN HERE 1");
   reload();
+  console.log("DOWN HERE 2");
 })()
