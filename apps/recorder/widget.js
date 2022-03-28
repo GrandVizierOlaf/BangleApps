@@ -256,6 +256,7 @@
       var buttons={Yes:"yes",No:"no"};
       if (newFileName) buttons["New"] = "new";
       return E.showPrompt("Overwrite\nLog " + settings.file.match(/\d+/)[0] + "?",{title:"Recorder",buttons:buttons}).then(selection=>{
+        console.log(`SELECTION: ${selection}`);
         if (selection==="no") return false; // just cancel
         if (selection==="yes") {
           require("Storage").open(settings.file,"r").erase();
