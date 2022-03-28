@@ -125,6 +125,7 @@ function formatPace(speed, paceLength) {
 }
 
 Bangle.on("GPS", function(fix) {
+  console.log(JSON.stringify(fix));
   if (!fix.fix) return; // only process actual fixes
 
   if (!state.active) return;
