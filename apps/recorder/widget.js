@@ -229,10 +229,14 @@
       recorder.draw(this.x+15+(i>>1)*12, this.y+(i&1)*12);
     });
   },getRecorders:getRecorders,reload:function() {
+    console.log("Reload 1");
     reload();
+    console.log("Reload 2");
     Bangle.drawWidgets(); // relayout all widgets
+    console.log("Reload 3");
   },setRecording:function(isOn) {
     var settings = loadSettings();
+    console.log(`S1: ${settings}`);
     if (isOn && !settings.recording && !settings.file) {
       settings.file = "recorder.log0.csv";
     } else if (isOn && !settings.recording && require("Storage").list(settings.file).length){
@@ -246,6 +250,7 @@
         newFileName="recorder.log" + (maxNumber + 1) + ".csv";
         updateSettings(settings);
       }
+    console.log(`S2: ${settings}`);
       var buttons={Yes:"yes",No:"no"};
       if (newFileName) buttons["New"] = "new";
       return E.showPrompt("Overwrite\nLog " + settings.file.match(/\d+/)[0] + "?",{title:"Recorder",buttons:buttons}).then(selection=>{
@@ -261,8 +266,12 @@
       });
     }
     settings.recording = isOn;
+    console.log("Updating settings");
     updateSettings(settings);
+    console.log("Reloading");
     WIDGETS["recorder"].reload();
+    console.log("Done reloading");
+    console.log(`Resolving with ${settings.recording}`);
     return Promise.resolve(settings.recording);
   }/*,plotTrack:function(m) { // m=instance of openstmap module
     // if we're here, settings was already loaded
