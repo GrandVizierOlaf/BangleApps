@@ -72,6 +72,7 @@ var state = {
   // cadence // steps per minute adjusted if <1 minute
   // BPM // beats per minute
   // BPMage // how many seconds was BPM set?
+  // maxBPM // The highest BPM reached while active
   // Notifies: 0 for disabled, otherwise how often to notify in meters, seconds, or steps
   notify: {
       dist: {
@@ -159,6 +160,10 @@ Bangle.on("HRM", function(h) {
   if (h.confidence>=60) {
     state.BPM = h.bpm;
     state.BPMage = 0;
+    if (state.maxBPM < h.bpm) {
+      state.maxBPM = h.bpm;
+      if (stats["maxbpm"]) stats["maxbpm"].emit("changed",stats["maxbpm"]);
+    }
     if (stats["bpm"]) stats["bpm"].emit("changed",stats["bpm"]);
   }
 });
@@ -230,6 +235,14 @@ exports.getStats = function(statIDs, options) {
       getString : function() { return state.BPM||"--" },
     };
   }
+  if (statIDs.includes("bpm")) {
+    needHRM = true;
+    stats["maxbpm"]={
+      title : "Max BPM",
+      getValue : function() { return state.maxBPM; },
+      getString : function() { return state.maxBPM||"--" },
+    };
+  }
   if (statIDs.includes("pacea")) {
     needGPS = true;
     stats["pacea"]={
@@ -299,6 +312,7 @@ exports.getStats = function(statIDs, options) {
     state.curSpeed = 0;
     state.BPM = 0;
     state.BPMage = 0;
+    state.maxBPM = 0;
     state.notify = options.notify;
     if (options.notify.dist.increment > 0) {
       state.notify.dist.next = state.distance + options.notify.dist.increment;
